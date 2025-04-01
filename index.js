@@ -15,7 +15,12 @@ connectDB();
 
 // Routes
 const authenticationRouter = require("./src/routes/AuthRoutes");
+const lostProductsRouter = require("./src/routes/LostProductsRoutes");
+const foundProductsRouter = require("./src/routes/FoundProductsRoutes");
+
 app.use("/auth", authenticationRouter);
+app.use("/lost-products", lostProductsRouter);
+app.use("/found-products", foundProductsRouter);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
