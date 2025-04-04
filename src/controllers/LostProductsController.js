@@ -1,20 +1,32 @@
-const { createLostProductInDB, getLostProductsFromDB, getLostProductByIdFromDB, updateLostProductInDB, deleteLostProductFromDB } = require("../models/LostProductsModel");
+const {
+  createLostProductInDB,
+  getLostProductsFromDB,
+  getLostProductByIdFromDB,
+  updateLostProductInDB,
+  deleteLostProductFromDB,
+} = require("../models/LostProductsModel");
 
 // Create a lost product
 const createLostProduct = async (req, res) => {
-  const { title, description, location, image, lost_time } = req.body;
+  console.log("Request Body:", req.body);
+  console.log("Uploaded Files:", req.files);
+  const { title, description, location, lost_time } = req.body;
   const userId = req.user.id; // Extract user ID from JWT token
 
+  // Check if all required fields are provided
   if (!title || !description || !location || !lost_time) {
     return res.status(400).json({ error: "All fields are required" });
   }
+
+  // Handle images (if sent via form-data)
+  const images = req.files ? req.files.map((file) => file.path) : []; // Array of file paths
 
   try {
     const newLostProduct = await createLostProductInDB({
       title,
       description,
       location,
-      image,
+      images, // Save the array of file paths
       lost_time,
       user_id: userId,
       created_at: new Date(),
