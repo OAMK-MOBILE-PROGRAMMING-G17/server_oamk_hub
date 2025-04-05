@@ -6,6 +6,8 @@ const {
 const authenticateToken = require("../middleware/authMiddleware");
 
 const router = express.Router();
+// Middleware to parse x-www-form-urlencoded data
+router.use(express.urlencoded({ extended: true }));
 
 // Routes for FoundProducts
 router.post("/", authenticateToken, createFoundProduct); // Add a comment for a found product

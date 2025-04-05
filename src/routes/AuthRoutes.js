@@ -3,6 +3,8 @@ const { registerUser, loginUser } = require("../controllers/AuthController");
 const authenticateToken = require("../middleware/authMiddleware");
 
 const router = express.Router();
+// Middleware to parse x-www-form-urlencoded data
+router.use(express.urlencoded({ extended: true }));
 
 // Public routes
 router.post("/register", registerUser);

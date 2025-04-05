@@ -21,10 +21,14 @@ connectDB();
 const authenticationRouter = require("./src/routes/AuthRoutes");
 const lostProductsRouter = require("./src/routes/LostProductsRoutes");
 const foundProductsRouter = require("./src/routes/FoundProductsRoutes");
+const marketplaceRouter = require("./src/routes/MarketplaceRoutes");
+const marketplaceChatsRouter = require("./src/routes/MarketplaceChatsRoutes");
 
 app.use("/auth", authenticationRouter);
 app.use("/lost-products", lostProductsRouter);
 app.use("/found-products", foundProductsRouter);
+app.use("/marketplace", marketplaceRouter);
+app.use("/marketplace-chats", marketplaceChatsRouter);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

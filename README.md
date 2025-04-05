@@ -119,4 +119,61 @@ This API provides endpoints for user registration, login, and profile access.
 - **Headers**:
   ```plaintext
   Authorization: Bearer <JWT_TOKEN>
+
+
+  # Marketplace API Documentation
+
+## 📦 Marketplace Routes
+
+### ➕ Create a Marketplace Item
+
+- **Endpoint:** `POST /marketplace`
+- **Body:** `form-data` with the following fields:
+  - `title` (string)
+  - `description` (string)
+  - `price` (number)
+  - `end_date` (date)
+  - `images` (multiple files)
+
+---
+
+### 📄 Get All Marketplace Items
+
+- **Endpoint:** `GET /marketplace`
+
+---
+
+### 🔍 Get Marketplace Item by ID
+
+- **Endpoint:** `GET /marketplace/:id`
+
+---
+
+### ✏️ Update Marketplace Item
+
+- **Endpoint:** `PUT /marketplace/:id`
+
+---
+
+### ❌ Delete Marketplace Item
+
+- **Endpoint:** `DELETE /marketplace/:id`
+
+---
+
+## 💬 Marketplace Chats Routes
+
+### ➕ Create a Chat Message
+
+- **Endpoint:** `POST /marketplace-chats`
+- **Body:** JSON with the following fields:
+  - `marketplace_id` (string)
+  - `messages` (string or array of strings)
+
+---
+
+### 📄 Get Chat Messages by Marketplace ID
+
+- **Endpoint:** `GET /marketplace-chats/:marketplaceId`
+
   
