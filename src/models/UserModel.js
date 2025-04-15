@@ -23,7 +23,28 @@ const findUserByEmail = async (email) => {
   return user;
 };
 
+// Store OTP for a user
+const storeOtpForUser = async (email, otp) => {
+  const collection = getUserCollection();
+  const otpExpiration = Date.now() + 10 * 60 * 1000; // OTP valid for 10 minutes
+  await collection.updateOne(
+    { email },
+    { $set: { otp, otp_expiration: otpExpiration } }
+  );
+};
+
+// Update user's password
+const updateUserPassword = async (email, hashedPassword) => {
+  const collection = getUserCollection();
+  await collection.updateOne(
+    { email },
+    { $set: { password: hashedPassword, otp: null, otp_expiration: null } }
+  );
+};
+
 module.exports = {
   createUser,
   findUserByEmail,
+  storeOtpForUser,
+  updateUserPassword,
 };

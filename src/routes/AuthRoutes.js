@@ -1,5 +1,5 @@
 const express = require("express");
-const { registerUser, loginUser } = require("../controllers/AuthController");
+const { registerUser, loginUser, requestPasswordReset, verifyOtpAndResetPassword } = require("../controllers/AuthController");
 const authenticateToken = require("../middleware/authMiddleware");
 
 const router = express.Router();
@@ -9,6 +9,8 @@ router.use(express.urlencoded({ extended: true }));
 // Public routes
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+router.post("/reset-password", requestPasswordReset); // Request password reset (send OTP)
+router.post("/verify-otp", verifyOtpAndResetPassword); // Verify OTP and reset password
 
 // Protected route example
 router.get("/profile", authenticateToken, (req, res) => {
