@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const { findUserByEmail, createUser, updateUserPassword, storeOtpForUser } = require("../models/UserModel");
+const { addTokenToBlacklist } = require("../models/TokenBlacklistModel");
 
 // Generate a random OTP
 const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString();
@@ -149,4 +150,23 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, requestPasswordReset, verifyOtpAndResetPassword };
+// Logout user
+const logoutUser = async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
+
+  if (!token) {
+    return res.status(400).json({ error: "Token is required" });
+  }
+
+  try {
+    // Add the token to the blacklist
+    await addTokenToBlacklist(token);
+
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    console.error("Error logging out:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+module.exports = { registerUser, loginUser, requestPasswordReset, verifyOtpAndResetPassword, logoutUser };
