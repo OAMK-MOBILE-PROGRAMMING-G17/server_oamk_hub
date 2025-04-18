@@ -177,3 +177,102 @@ This API provides endpoints for user registration, login, and profile access.
 - **Endpoint:** `GET /marketplace-chats/:marketplaceId`
 
   
+  ## 🛠️ API Specifications for Posts & Comments
+
+> 🔐 All endpoints require JWT authentication via:
+> `Authorization: Bearer <token>`
+
+---
+
+## 📌 Posts API
+
+### 1. Create Post
+- **Method:** `POST`
+- **Endpoint:** `/posts`
+- **Body:**
+```json
+{
+  "content": "Your post content here"
+}
+```
+- **Response:**
+  - `201 Created`: Post created
+  - `400 Bad Request`: Missing content
+  - `500 Internal Server Error`
+
+---
+
+### 2. Get All Posts
+- **Method:** `GET`
+- **Endpoint:** `/posts`
+- **Response:**
+  - `200 OK`: List of posts
+  - `500 Internal Server Error`
+
+---
+
+### 3. Get Post by ID
+- **Method:** `GET`
+- **Endpoint:** `/posts/:id`
+- **Response:**
+  - `200 OK`: Post data
+  - `404 Not Found`: Post not found
+  - `500 Internal Server Error`
+
+---
+
+### 4. Like/Unlike Post
+- **Method:** `POST`
+- **Endpoint:** `/posts/:id/like`
+- **Response:**
+  - `200 OK`: `{ message: "Post liked" }` or `{ message: "Like removed" }`
+  - `404 Not Found`: Post not found
+  - `500 Internal Server Error`
+
+---
+
+### 5. Dislike/Remove Dislike
+- **Method:** `POST`
+- **Endpoint:** `/posts/:id/dislike`
+- **Response:**
+  - `200 OK`: `{ message: "Post disliked" }` or `{ message: "Dislike removed" }`
+  - `404 Not Found`: Post not found
+  - `500 Internal Server Error`
+
+---
+
+### 6. Delete Post
+- **Method:** `DELETE`
+- **Endpoint:** `/posts/:id`
+- **Response:**
+  - `200 OK`: `{ message: "Post deleted successfully" }`
+  - `404 Not Found`: Post not found
+  - `500 Internal Server Error`
+
+---
+
+## 💬 Comments API
+
+### 1. Add Comment to Post
+- **Method:** `POST`
+- **Endpoint:** `/comments/:postId`
+- **Body:**
+```json
+{
+  "content": "Your comment here"
+}
+```
+- **Response:**
+  - `201 Created`: Comment added
+  - `400 Bad Request`: Missing content
+  - `500 Internal Server Error`
+
+---
+
+### 2. Get Comments by Post ID
+- **Method:** `GET`
+- **Endpoint:** `/comments/:postId`
+- **Response:**
+  - `200 OK`: List of comments
+  - `500 Internal Server Error`
+
