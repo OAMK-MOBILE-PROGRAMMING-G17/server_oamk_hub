@@ -16,8 +16,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Request password reset (send OTP)
-const requestPasswordReset = async (req, res) => {
+// Request OTP for password reset
+const requestPasswordResetOtp = async (req, res) => {
   const { email } = req.body;
 
   if (!email) {
@@ -51,8 +51,34 @@ const requestPasswordReset = async (req, res) => {
   }
 };
 
-// Verify OTP and reset password
-const verifyOtpAndResetPassword = async (req, res) => {
+// Verify OTP
+const verifyOtp = async (req, res) => {
+  const { email, otp } = req.body;
+
+  if (!email || !otp) {
+    return res.status(400).json({ error: "Email and OTP are required" });
+  }
+
+  try {
+    const user = await findUserByEmail(email);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Verify OTP
+    if (user.otp !== otp || user.otp_expiration < Date.now()) {
+      return res.status(400).json({ error: "Invalid or expired OTP" });
+    }
+
+    res.status(200).json({ message: "OTP verified successfully" });
+  } catch (error) {
+    console.error("Error verifying OTP:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+// Reset password after OTP verification
+const resetPassword = async (req, res) => {
   const { email, otp, newPassword } = req.body;
 
   if (!email || !otp || !newPassword) {
@@ -169,4 +195,4 @@ const logoutUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, requestPasswordReset, verifyOtpAndResetPassword, logoutUser };
+module.exports = { registerUser, loginUser, requestPasswordResetOtp, verifyOtp, resetPassword, logoutUser };
