@@ -62,13 +62,24 @@ const getPostById = async (req, res) => {
 // Like a post
 const likePost = async (req, res) => {
     const { id } = req.params;
+    const userId = req.user.id; // Extract user ID from JWT token
 
     try {
-        const updatedPost = await updatePostLikesDislikes(id, { likes: 1 });
-        if (!updatedPost) {
+        const post = await getPostByIdFromDB(id);
+        if (!post) {
             return res.status(404).json({ error: "Post not found" });
         }
-        res.status(200).json(updatedPost);
+
+        // Check if the user has already liked the post
+        if (post.liked_by.includes(userId)) {
+            // Remove like
+            const updatedPost = await updatePostLikesDislikes(id, userId, "remove_like");
+            return res.status(200).json({ message: "Like removed", post: updatedPost.value });
+        } else {
+            // Add like
+            const updatedPost = await updatePostLikesDislikes(id, userId, "like");
+            return res.status(200).json({ message: "Post liked", post: updatedPost.value });
+        }
     } catch (error) {
         console.error("Error liking post:", error);
         res.status(500).json({ error: "Internal Server Error" });
@@ -78,13 +89,24 @@ const likePost = async (req, res) => {
 // Dislike a post
 const dislikePost = async (req, res) => {
     const { id } = req.params;
+    const userId = req.user.id; // Extract user ID from JWT token
 
     try {
-        const updatedPost = await updatePostLikesDislikes(id, { dislikes: 1 });
-        if (!updatedPost) {
+        const post = await getPostByIdFromDB(id);
+        if (!post) {
             return res.status(404).json({ error: "Post not found" });
         }
-        res.status(200).json(updatedPost);
+
+        // Check if the user has already disliked the post
+        if (post.disliked_by.includes(userId)) {
+            // Remove dislike
+            const updatedPost = await updatePostLikesDislikes(id, userId, "remove_dislike");
+            return res.status(200).json({ message: "Dislike removed", post: updatedPost.value });
+        } else {
+            // Add dislike
+            const updatedPost = await updatePostLikesDislikes(id, userId, "dislike");
+            return res.status(200).json({ message: "Post disliked", post: updatedPost.value });
+        }
     } catch (error) {
         console.error("Error disliking post:", error);
         res.status(500).json({ error: "Internal Server Error" });
