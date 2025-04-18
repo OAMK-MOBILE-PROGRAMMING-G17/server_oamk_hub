@@ -196,9 +196,29 @@ This API provides endpoints for user registration, login, and profile access.
 }
 ```
 - **Response:**
-  - `201 Created`: Post created
-  - `400 Bad Request`: Missing content
-  - `500 Internal Server Error`
+```json
+// 201 Created
+{
+  "_id": "<post_id>",
+  "user_id": "<user_id>",
+  "content": "Your post content here",
+  "likes": 0,
+  "dislikes": 0,
+  "comments": 0,
+  "created_at": "<timestamp>",
+  "updated_at": "<timestamp>"
+}
+
+// 400 Bad Request
+{
+  "error": "Content is required"
+}
+
+// 500 Internal Server Error
+{
+  "error": "Internal Server Error"
+}
+```
 
 ---
 
@@ -206,8 +226,27 @@ This API provides endpoints for user registration, login, and profile access.
 - **Method:** `GET`
 - **Endpoint:** `/posts`
 - **Response:**
-  - `200 OK`: List of posts
-  - `500 Internal Server Error`
+```json
+// 200 OK
+[
+  {
+    "_id": "<post_id>",
+    "user_id": "<user_id>",
+    "content": "...",
+    "likes": 5,
+    "dislikes": 1,
+    "comments": 2,
+    "created_at": "<timestamp>",
+    "updated_at": "<timestamp>"
+  },
+  ...
+]
+
+// 500 Internal Server Error
+{
+  "error": "Internal Server Error"
+}
+```
 
 ---
 
@@ -215,9 +254,29 @@ This API provides endpoints for user registration, login, and profile access.
 - **Method:** `GET`
 - **Endpoint:** `/posts/:id`
 - **Response:**
-  - `200 OK`: Post data
-  - `404 Not Found`: Post not found
-  - `500 Internal Server Error`
+```json
+// 200 OK
+{
+  "_id": "<post_id>",
+  "user_id": "<user_id>",
+  "content": "...",
+  "likes": 5,
+  "dislikes": 1,
+  "comments": 2,
+  "created_at": "<timestamp>",
+  "updated_at": "<timestamp>"
+}
+
+// 404 Not Found
+{
+  "error": "Post not found"
+}
+
+// 500 Internal Server Error
+{
+  "error": "Internal Server Error"
+}
+```
 
 ---
 
@@ -225,9 +284,30 @@ This API provides endpoints for user registration, login, and profile access.
 - **Method:** `POST`
 - **Endpoint:** `/posts/:id/like`
 - **Response:**
-  - `200 OK`: `{ message: "Post liked" }` or `{ message: "Like removed" }`
-  - `404 Not Found`: Post not found
-  - `500 Internal Server Error`
+```json
+// 200 OK
+{
+  "message": "Post liked",
+  "post": { ...updatedPost }
+}
+
+// OR
+
+{
+  "message": "Like removed",
+  "post": { ...updatedPost }
+}
+
+// 404 Not Found
+{
+  "error": "Post not found"
+}
+
+// 500 Internal Server Error
+{
+  "error": "Internal Server Error"
+}
+```
 
 ---
 
@@ -235,9 +315,30 @@ This API provides endpoints for user registration, login, and profile access.
 - **Method:** `POST`
 - **Endpoint:** `/posts/:id/dislike`
 - **Response:**
-  - `200 OK`: `{ message: "Post disliked" }` or `{ message: "Dislike removed" }`
-  - `404 Not Found`: Post not found
-  - `500 Internal Server Error`
+```json
+// 200 OK
+{
+  "message": "Post disliked",
+  "post": { ...updatedPost }
+}
+
+// OR
+
+{
+  "message": "Dislike removed",
+  "post": { ...updatedPost }
+}
+
+// 404 Not Found
+{
+  "error": "Post not found"
+}
+
+// 500 Internal Server Error
+{
+  "error": "Internal Server Error"
+}
+```
 
 ---
 
@@ -245,9 +346,22 @@ This API provides endpoints for user registration, login, and profile access.
 - **Method:** `DELETE`
 - **Endpoint:** `/posts/:id`
 - **Response:**
-  - `200 OK`: `{ message: "Post deleted successfully" }`
-  - `404 Not Found`: Post not found
-  - `500 Internal Server Error`
+```json
+// 200 OK
+{
+  "message": "Post deleted successfully"
+}
+
+// 404 Not Found
+{
+  "error": "Post not found"
+}
+
+// 500 Internal Server Error
+{
+  "error": "Internal Server Error"
+}
+```
 
 ---
 
@@ -263,9 +377,26 @@ This API provides endpoints for user registration, login, and profile access.
 }
 ```
 - **Response:**
-  - `201 Created`: Comment added
-  - `400 Bad Request`: Missing content
-  - `500 Internal Server Error`
+```json
+// 201 Created
+{
+  "_id": "<comment_id>",
+  "post_id": "<post_id>",
+  "user_id": "<user_id>",
+  "content": "Your comment here",
+  "created_at": "<timestamp>"
+}
+
+// 400 Bad Request
+{
+  "error": "Content is required"
+}
+
+// 500 Internal Server Error
+{
+  "error": "Internal Server Error"
+}
+```
 
 ---
 
@@ -273,6 +404,22 @@ This API provides endpoints for user registration, login, and profile access.
 - **Method:** `GET`
 - **Endpoint:** `/comments/:postId`
 - **Response:**
-  - `200 OK`: List of comments
-  - `500 Internal Server Error`
+```json
+// 200 OK
+[
+  {
+    "_id": "<comment_id>",
+    "post_id": "<post_id>",
+    "user_id": "<user_id>",
+    "content": "...",
+    "created_at": "<timestamp>"
+  },
+  ...
+]
+
+// 500 Internal Server Error
+{
+  "error": "Internal Server Error"
+}
+```
 
