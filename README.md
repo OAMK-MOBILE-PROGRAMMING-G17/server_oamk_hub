@@ -177,3 +177,249 @@ This API provides endpoints for user registration, login, and profile access.
 - **Endpoint:** `GET /marketplace-chats/:marketplaceId`
 
   
+  ## 🛠️ API Specifications for Posts & Comments
+
+> 🔐 All endpoints require JWT authentication via:
+> `Authorization: Bearer <token>`
+
+---
+
+## 📌 Posts API
+
+### 1. Create Post
+- **Method:** `POST`
+- **Endpoint:** `/posts`
+- **Body:**
+```json
+{
+  "content": "Your post content here"
+}
+```
+- **Response:**
+```json
+// 201 Created
+{
+  "_id": "<post_id>",
+  "user_id": "<user_id>",
+  "content": "Your post content here",
+  "likes": 0,
+  "dislikes": 0,
+  "comments": 0,
+  "created_at": "<timestamp>",
+  "updated_at": "<timestamp>"
+}
+
+// 400 Bad Request
+{
+  "error": "Content is required"
+}
+
+// 500 Internal Server Error
+{
+  "error": "Internal Server Error"
+}
+```
+
+---
+
+### 2. Get All Posts
+- **Method:** `GET`
+- **Endpoint:** `/posts`
+- **Response:**
+```json
+// 200 OK
+[
+  {
+    "_id": "<post_id>",
+    "user_id": "<user_id>",
+    "content": "...",
+    "likes": 5,
+    "dislikes": 1,
+    "comments": 2,
+    "created_at": "<timestamp>",
+    "updated_at": "<timestamp>"
+  },
+  ...
+]
+
+// 500 Internal Server Error
+{
+  "error": "Internal Server Error"
+}
+```
+
+---
+
+### 3. Get Post by ID
+- **Method:** `GET`
+- **Endpoint:** `/posts/:id`
+- **Response:**
+```json
+// 200 OK
+{
+  "_id": "<post_id>",
+  "user_id": "<user_id>",
+  "content": "...",
+  "likes": 5,
+  "dislikes": 1,
+  "comments": 2,
+  "created_at": "<timestamp>",
+  "updated_at": "<timestamp>"
+}
+
+// 404 Not Found
+{
+  "error": "Post not found"
+}
+
+// 500 Internal Server Error
+{
+  "error": "Internal Server Error"
+}
+```
+
+---
+
+### 4. Like/Unlike Post
+- **Method:** `POST`
+- **Endpoint:** `/posts/:id/like`
+- **Response:**
+```json
+// 200 OK
+{
+  "message": "Post liked",
+  "post": { ...updatedPost }
+}
+
+// OR
+
+{
+  "message": "Like removed",
+  "post": { ...updatedPost }
+}
+
+// 404 Not Found
+{
+  "error": "Post not found"
+}
+
+// 500 Internal Server Error
+{
+  "error": "Internal Server Error"
+}
+```
+
+---
+
+### 5. Dislike/Remove Dislike
+- **Method:** `POST`
+- **Endpoint:** `/posts/:id/dislike`
+- **Response:**
+```json
+// 200 OK
+{
+  "message": "Post disliked",
+  "post": { ...updatedPost }
+}
+
+// OR
+
+{
+  "message": "Dislike removed",
+  "post": { ...updatedPost }
+}
+
+// 404 Not Found
+{
+  "error": "Post not found"
+}
+
+// 500 Internal Server Error
+{
+  "error": "Internal Server Error"
+}
+```
+
+---
+
+### 6. Delete Post
+- **Method:** `DELETE`
+- **Endpoint:** `/posts/:id`
+- **Response:**
+```json
+// 200 OK
+{
+  "message": "Post deleted successfully"
+}
+
+// 404 Not Found
+{
+  "error": "Post not found"
+}
+
+// 500 Internal Server Error
+{
+  "error": "Internal Server Error"
+}
+```
+
+---
+
+## 💬 Comments API
+
+### 1. Add Comment to Post
+- **Method:** `POST`
+- **Endpoint:** `/comments/:postId`
+- **Body:**
+```json
+{
+  "content": "Your comment here"
+}
+```
+- **Response:**
+```json
+// 201 Created
+{
+  "_id": "<comment_id>",
+  "post_id": "<post_id>",
+  "user_id": "<user_id>",
+  "content": "Your comment here",
+  "created_at": "<timestamp>"
+}
+
+// 400 Bad Request
+{
+  "error": "Content is required"
+}
+
+// 500 Internal Server Error
+{
+  "error": "Internal Server Error"
+}
+```
+
+---
+
+### 2. Get Comments by Post ID
+- **Method:** `GET`
+- **Endpoint:** `/comments/:postId`
+- **Response:**
+```json
+// 200 OK
+[
+  {
+    "_id": "<comment_id>",
+    "post_id": "<post_id>",
+    "user_id": "<user_id>",
+    "content": "...",
+    "created_at": "<timestamp>"
+  },
+  ...
+]
+
+// 500 Internal Server Error
+{
+  "error": "Internal Server Error"
+}
+```
+
