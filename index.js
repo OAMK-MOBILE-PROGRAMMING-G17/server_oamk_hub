@@ -22,11 +22,13 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 connectDB();
 
 // ─────────────────── routes ────────────────────────
-app.use("/auth",            require("./src/routes/AuthRoutes"));
-app.use("/lost-products",   require("./src/routes/LostProductsRoutes"));
-app.use("/found-products",  require("./src/routes/FoundProductsRoutes"));
-app.use("/marketplace",     require("./src/routes/MarketplaceRoutes"));
+app.use("/auth",              require("./src/routes/AuthRoutes"));
+app.use("/lost-products",     require("./src/routes/LostProductsRoutes"));
+app.use("/found-products",    require("./src/routes/FoundProductsRoutes"));
+app.use("/marketplace",       require("./src/routes/MarketplaceRoutes"));
 app.use("/marketplace-chats", require("./src/routes/MarketplaceChatsRoutes"));
+app.use("/posts",             require("./src/routes/PostsRoutes"));
+app.use("/comments",          require("./src/routes/CommentsRoutes"));
 
 // ─────────────────── start server ──────────────────
 const PORT = process.env.PORT || 3001;
