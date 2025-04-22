@@ -1,36 +1,35 @@
 const express = require("express");
 const cors = require("cors");
-const path = require("path");
-require("dotenv").config(); // For environment variables
-const { connectDB } = require("./src/config/database"); // Import the database connection
+const path  = require("path");
+require("dotenv").config();
+const { connectDB } = require("./src/config/database");
 
-const app = express();
+const app = express();                
 
-// Middleware
+const http = require("http");
+const server = http.createServer(app); 
+
+const initSocket = require("./src/socket/MarketplaceChatSocket");
+initSocket(server);                    
+
+// ─────────────────── middleware ───────────────────
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Serve static files from the uploads directory
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Connect to MongoDB
+// ─────────────────── database ──────────────────────
 connectDB();
 
-// Routes
-const authenticationRouter = require("./src/routes/AuthRoutes");
-const lostProductsRouter = require("./src/routes/LostProductsRoutes");
-const foundProductsRouter = require("./src/routes/FoundProductsRoutes");
-const marketplaceRouter = require("./src/routes/MarketplaceRoutes");
-const marketplaceChatsRouter = require("./src/routes/MarketplaceChatsRoutes");
+// ─────────────────── routes ────────────────────────
+app.use("/auth",            require("./src/routes/AuthRoutes"));
+app.use("/lost-products",   require("./src/routes/LostProductsRoutes"));
+app.use("/found-products",  require("./src/routes/FoundProductsRoutes"));
+app.use("/marketplace",     require("./src/routes/MarketplaceRoutes"));
+app.use("/marketplace-chats", require("./src/routes/MarketplaceChatsRoutes"));
 
-app.use("/auth", authenticationRouter);
-app.use("/lost-products", lostProductsRouter);
-app.use("/found-products", foundProductsRouter);
-app.use("/marketplace", marketplaceRouter);
-app.use("/marketplace-chats", marketplaceChatsRouter);
-
+// ─────────────────── start server ──────────────────
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
