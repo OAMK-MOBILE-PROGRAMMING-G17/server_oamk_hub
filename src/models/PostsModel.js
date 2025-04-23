@@ -2,6 +2,7 @@ const { client } = require("../config/database");
 
 const dbName = "oamkhub";
 const collectionName = "posts";
+const usersCollectionName = "users";
 
 const getPostsCollection = () => client.db(dbName).collection(collectionName);
 
@@ -10,9 +11,52 @@ const createPostInDB = async (post) => {
     return await collection.insertOne(post);
 };
 
+// const getAllPostsFromDB = async () => {
+//     const collection = getPostsCollection();
+//     return await collection.find().toArray();
+// };
+
+/// Fetch all posts with user information
 const getAllPostsFromDB = async () => {
     const collection = getPostsCollection();
-    return await collection.find().toArray();
+    return await collection
+        .aggregate([
+            {
+                $addFields: {
+                    user_id_as_objectId: { $toObjectId: "$user_id" }, // Convert user_id string to ObjectId
+                },
+            },
+            {
+                $lookup: {
+                    from: usersCollectionName, // Join with the users collection
+                    localField: "user_id_as_objectId", // Use the converted ObjectId field
+                    foreignField: "_id", // Field in users collection
+                    as: "user_info", // Output array field
+                },
+            },
+            {
+                $unwind: "$user_info", // Flatten the user_info array
+            },
+            {
+                $sort: { created_at: -1 }, // Sort by created_at in descending order
+            },
+            {
+                $project: {
+                    _id: 1,
+                    user_id: 1,
+                    content: 1,
+                    likes: 1,
+                    dislikes: 1,
+                    comments: 1,
+                    created_at: 1,
+                    updated_at: 1,
+                    "user_info.name": 1,
+                    "user_info.email": 1,
+                    "user_info.profilePicture": 1,
+                },
+            },
+        ])
+        .toArray();
 };
 
 const getPostByIdFromDB = async (id) => {
