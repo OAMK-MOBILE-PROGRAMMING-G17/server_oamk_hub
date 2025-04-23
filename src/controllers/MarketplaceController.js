@@ -12,10 +12,10 @@ const path = require("path");
 
 // Create a marketplace item
 const createMarketplaceItem = async (req, res) => {
-  const { title, description, price, end_date } = req.body;
+  const { title, description, price, end_date, address, gps_location } = req.body;
   const userId = req.user.id; // Extract user ID from JWT token
 
-  if (!title || !description || !price || !end_date) {
+  if (!title || !description || !price || !end_date || !address) {
     return res.status(400).json({ error: "All fields are required" });
   }
 
@@ -29,6 +29,8 @@ const createMarketplaceItem = async (req, res) => {
       price,
       user_id: userId,
       images,
+      address,
+      gps_location: gps_location || null,
       end_date,
       expired: false,
       created_at: new Date(),

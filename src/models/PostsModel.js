@@ -59,9 +59,50 @@ const getAllPostsFromDB = async () => {
         .toArray();
 };
 
+const { ObjectId } = require("mongodb");
+
 const getPostByIdFromDB = async (id) => {
     const collection = getPostsCollection();
-    return await collection.findOne({ id });
+    const posts = await collection
+        .aggregate([
+            {
+                $match: { _id: new ObjectId(id) }, // Match the specific post by ID
+            },
+            {
+                $addFields: {
+                    user_id_as_objectId: { $toObjectId: "$user_id" }, // Convert user_id string to ObjectId
+                },
+            },
+            {
+                $lookup: {
+                    from: usersCollectionName, // Join with the users collection
+                    localField: "user_id_as_objectId", // Use the converted ObjectId field
+                    foreignField: "_id", // Field in users collection
+                    as: "user_info", // Output array field
+                },
+            },
+            {
+                $unwind: "$user_info", // Flatten the user_info array
+            },
+            {
+                $project: {
+                    _id: 1,
+                    user_id: 1,
+                    content: 1,
+                    likes: 1,
+                    dislikes: 1,
+                    comments: 1,
+                    created_at: 1,
+                    updated_at: 1,
+                    "user_info.name": 1,
+                    "user_info.email": 1,
+                    "user_info.profilePicture": 1,
+                },
+            },
+        ])
+        .toArray();
+
+    return posts[0]; // Return the first (and only) post in the result
 };
 
 const updatePostLikesDislikes = async (postId, userId, action) => {

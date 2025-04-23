@@ -16,7 +16,8 @@ const createPost = async (req, res) => {
     }
 
     try {
-        const newPost = await createPostInDB({
+        // Insert the new post into the database
+        const result = await createPostInDB({
             user_id: userId,
             content,
             likes: 0,
@@ -25,7 +26,11 @@ const createPost = async (req, res) => {
             created_at: new Date(),
             updated_at: new Date(),
         });
-        res.status(201).json(newPost);
+
+        // Fetch the newly created post with user info
+        const newPost = await getPostByIdFromDB(result.insertedId);
+
+        res.status(201).json(newPost); // Send the new post with user info as the response
     } catch (error) {
         console.error("Error creating post:", error);
         res.status(500).json({ error: "Internal Server Error" });
