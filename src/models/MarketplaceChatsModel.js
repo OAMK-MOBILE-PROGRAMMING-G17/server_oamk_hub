@@ -19,7 +19,7 @@ async function getThreadsForUserFromDB(userId) {
   const pipeline = [
     {
       $match: {
-        participants: userId 
+        participants: userId
       }
     },
     {
@@ -31,6 +31,13 @@ async function getThreadsForUserFromDB(userId) {
         participants: { $first: "$participants" }
       }
     },
+    // 🛠 Convert buyer_id and seller_id from string → ObjectId
+    {
+      $addFields: {
+        buyer_id_obj: { $toObjectId: "$buyer_id" },
+        seller_id_obj: { $toObjectId: "$seller_id" }
+      }
+    },
     {
       $lookup: {
         from: "Marketplace",
@@ -40,10 +47,29 @@ async function getThreadsForUserFromDB(userId) {
       }
     },
     {
-      $unwind: {
-        path: "$item",
-        preserveNullAndEmptyArrays: true
+      $unwind: { path: "$item", preserveNullAndEmptyArrays: true }
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "buyer_id_obj",
+        foreignField: "_id",
+        as: "buyer_user"
       }
+    },
+    {
+      $unwind: { path: "$buyer_user", preserveNullAndEmptyArrays: true }
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "seller_id_obj",
+        foreignField: "_id",
+        as: "seller_user"
+      }
+    },
+    {
+      $unwind: { path: "$seller_user", preserveNullAndEmptyArrays: true }
     },
     {
       $project: {
@@ -53,10 +79,19 @@ async function getThreadsForUserFromDB(userId) {
         buyer_id: 1,
         seller_id: 1,
         participants: 1,
-        item_title: "$item.title"
+        item_title: "$item.title",
+        buyer_name: "$buyer_user.name",
+        seller_name: "$seller_user.name"
       }
     }
   ];
+
+  return client
+    .db(dbName)
+    .collection(collectionName)
+    .aggregate(pipeline)
+    .toArray();
+}
 
   return client
     .db(dbName)
