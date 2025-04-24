@@ -93,13 +93,6 @@ async function getThreadsForUserFromDB(userId) {
     .toArray();
 }
 
-  return client
-    .db(dbName)
-    .collection(collectionName)
-    .aggregate(pipeline)
-    .toArray();
-}
-
 module.exports = {
   createChatMessageInDB,
   getChatMessagesByListingAndBuyerFromDB,
